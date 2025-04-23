@@ -7,10 +7,10 @@ import {CustomItemService} from '@spt/services/mod/CustomItemService';
 import {Traders} from '@spt/models/enums/Traders';
 import idcalc from '../helpers/idcalc';
 
-const newId: string = '68090533afe569b390391100';
+const newId: string = '68090df530a3d650ee091400';
 const assortId: string = idcalc(newId,0xff);
 
-export default function addCustomAmmoCase_9x18(logger: ILogger,customItemService: CustomItemService,tables: IDatabaseTables) {
+export default function addCustomAmmoCase_762x25(logger: ILogger,customItemService: CustomItemService,tables: IDatabaseTables) {
   const newItem: NewItemFromCloneDetails = {
     itemTplToClone: ItemTpl.CONTAINER_AMMUNITION_CASE,
     newId: newId,
@@ -20,14 +20,14 @@ export default function addCustomAmmoCase_9x18(logger: ILogger,customItemService
     handbookParentId: '5b5f6fa186f77409407a7eb7',
     locales: {
       en: {
-        name: 'custom 9x19 ammo container',
-        shortName: '9x19',
-        description: 'custom 9x19 ammo container'
+        name: 'custom 7.62x25 TT ammo case',
+        shortName: '7.62x25 TT',
+        description: 'custom 7.62x25 TT ammo case'
       },
       ch: {
-        name: '客制 9x19 弹药箱',
-        shortName: '9x19',
-        description: '客制 9x19 弹药箱'
+        name: '客制 7.62x25 TT 弹药箱',
+        shortName: '7.62x25 TT',
+        description: '客制 7.62x25 TT 弹药箱'
       }
     },
     overrideProperties: {
@@ -43,7 +43,7 @@ export default function addCustomAmmoCase_9x18(logger: ILogger,customItemService
       LootExperience: 50,
       Grids: [
         {
-          _id: idcalc(newId,0x01),//id+0x01
+          _id: idcalc(newId,0x01),
           _name: 'colume1',
           _parent: newId,
           _proto: '55d329c24bdc2d892f8b4567',
@@ -52,7 +52,7 @@ export default function addCustomAmmoCase_9x18(logger: ILogger,customItemService
             cellsV: 14,
             filters: [
               {
-                Filter: [ItemTpl.AMMO_9X19_PBP],
+                Filter: [ItemTpl.AMMO_762X25TT_PST],
                 ExcludedFilter: []
               }
             ],
@@ -71,7 +71,7 @@ export default function addCustomAmmoCase_9x18(logger: ILogger,customItemService
             cellsV: 14,
             filters: [
               {
-                Filter: [ItemTpl.AMMO_9X19_AP_63],
+                Filter: [ItemTpl.AMMO_762X25TT_PT],
                 ExcludedFilter: []
               }
             ],
@@ -90,7 +90,7 @@ export default function addCustomAmmoCase_9x18(logger: ILogger,customItemService
             cellsV: 14,
             filters: [
               {
-                Filter: [ItemTpl.AMMO_9X19_PST],
+                Filter: [ItemTpl.AMMO_762X25TT_P],
                 ExcludedFilter: []
               }
             ],
@@ -109,7 +109,7 @@ export default function addCustomAmmoCase_9x18(logger: ILogger,customItemService
             cellsV: 14,
             filters: [
               {
-                Filter: [ItemTpl.AMMO_9X19_M882],
+                Filter: [ItemTpl.AMMO_762X25TT_AKBS],
                 ExcludedFilter: []
               }
             ],
@@ -128,7 +128,7 @@ export default function addCustomAmmoCase_9x18(logger: ILogger,customItemService
             cellsV: 14,
             filters: [
               {
-                Filter: [ItemTpl.AMMO_9X19_GT],
+                Filter: [ItemTpl.AMMO_762X25TT_FMJ43],
                 ExcludedFilter: []
               }
             ],
@@ -147,7 +147,7 @@ export default function addCustomAmmoCase_9x18(logger: ILogger,customItemService
             cellsV: 14,
             filters: [
               {
-                Filter: [ItemTpl.AMMO_9X19_LUGER_CCI],
+                Filter: [ItemTpl.AMMO_762X25TT_LRN],
                 ExcludedFilter: []
               }
             ],
@@ -166,7 +166,7 @@ export default function addCustomAmmoCase_9x18(logger: ILogger,customItemService
             cellsV: 14,
             filters: [
               {
-                Filter: [ItemTpl.AMMO_9X19_PSO],
+                Filter: [ItemTpl.AMMO_762X25TT_LRNPC],
                 ExcludedFilter: []
               }
             ],
@@ -185,7 +185,7 @@ export default function addCustomAmmoCase_9x18(logger: ILogger,customItemService
             cellsV: 14,
             filters: [
               {
-                Filter: [ItemTpl.AMMO_9X19_QUAKEMAKER],
+                Filter: [],
                 ExcludedFilter: []
               }
             ],
@@ -204,7 +204,7 @@ export default function addCustomAmmoCase_9x18(logger: ILogger,customItemService
             cellsV: 14,
             filters: [
               {
-                Filter: [ItemTpl.AMMO_9X19_RIP],
+                Filter: [],
                 ExcludedFilter: []
               }
             ],
@@ -315,7 +315,7 @@ export default function addCustomAmmoCase_9x18(logger: ILogger,customItemService
 
   const createResult = customItemService.createItemFromClone(newItem);
   if(!createResult.success) {
-    logger.error('[SPTarkovAmmoCases]：addCustomAmmoCase_9x19，Error：' + createResult.errors.join('、'));
+    logger.error('[SPTarkovAmmoCases]：addCustomAmmoCase_762x25，Error：' + createResult.errors.join('、'));
     return;
   }
 
@@ -339,5 +339,5 @@ export default function addCustomAmmoCase_9x18(logger: ILogger,customItemService
     ]
   ];
 
-  logger.success('[SPTarkovAmmoCases]：addCustomAmmoCase_9x19，ID：' + createResult.itemId);
+  logger.success('[SPTarkovAmmoCases]：addCustomAmmoCase_762x25，ID：' + createResult.itemId);
 }

@@ -15,8 +15,8 @@ export default function addCustomAmmoCase_9x18(logger: ILogger,customItemService
     itemTplToClone: ItemTpl.CONTAINER_AMMUNITION_CASE,
     newId: newId,
     parentId: BaseClasses.SIMPLE_CONTAINER,
-    fleaPriceRoubles: 125_0000,
-    handbookPriceRoubles: 100_0000,
+    fleaPriceRoubles: 62_5000,
+    handbookPriceRoubles: 50_0000,
     handbookParentId: '5b5f6fa186f77409407a7eb7',
     locales: {
       en: {
@@ -39,8 +39,8 @@ export default function addCustomAmmoCase_9x18(logger: ILogger,customItemService
       mousePenalty: 0,
       speedPenaltyPercent: 0,
       weaponErgonomicPenalty: 0,
-      ExamineExperience: 100,
-      LootExperience: 100,
+      ExamineExperience: 50,
+      LootExperience: 50,
       Grids: [
         {
           _id: idcalc(newId,0x01),
