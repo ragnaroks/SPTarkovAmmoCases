@@ -32,6 +32,14 @@ import addCustomAmmoCase_12gs from './modifies/addCustomAmmoCase_12gs';
 import addCustomAmmoCase_20gb from './modifies/addCustomAmmoCase_20gb';
 import addCustomAmmoCase_20gs from './modifies/addCustomAmmoCase_20gs';
 import addCustomAmmoCase_4g from './modifies/addCustomAmmoCase_4g';
+import applyAmmoBackgroundColor from './modifies/applyAmmoBackgroundColor';
+import addCustomAmmoCase_PL0 from './modifies/addCustomAmmoCase_pl0';
+import addCustomAmmoCase_PL1 from './modifies/addCustomAmmoCase_PL1';
+import addCustomAmmoCase_PL2 from './modifies/addCustomAmmoCase_PL2';
+import addCustomAmmoCase_PL3 from './modifies/addCustomAmmoCase_PL3';
+import addCustomAmmoCase_PL4 from './modifies/addCustomAmmoCase_PL4';
+import addCustomAmmoCase_PL5 from './modifies/addCustomAmmoCase_PL5';
+import addCustomAmmoCase_PL6 from './modifies/addCustomAmmoCase_PL6';
 
 // example：https://dev.sp-tarkov.com/chomp/ModExamples/
 
@@ -50,64 +58,51 @@ class Mod implements IPreSptLoadMod,IPostDBLoadMod,IPostSptLoadMod {
 
   public postDBLoad(container: DependencyContainer): void {
     const tables: IDatabaseTables = this.databaseServer.getTables();
-    
+
     // pistol
-
     addCustomAmmoCase_762x25(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_9x18(this.logger,this.customItemService,tables);
-    
     addCustomAmmoCase_9x19(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_9x21(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_9x33r(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_1143x23(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_127x33(this.logger,this.customItemService,tables);
 
     // PDW
-
     addCustomAmmoCase_46x30(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_57x28(this.logger,this.customItemService,tables);
 
     // rifle
-
     addCustomAmmoCase_545x39(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_556x45(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_68x51(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_762x35(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_762x39(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_762x51(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_762x54(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_86x70(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_9x39(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_955x39(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_127x55(this.logger,this.customItemService,tables);
 
     // shotgun
-
     addCustomAmmoCase_12gb(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_12gs(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_20gb(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_20gs(this.logger,this.customItemService,tables);
-
     addCustomAmmoCase_4g(this.logger,this.customItemService,tables);
+
+    // PLs
+    addCustomAmmoCase_PL0(this.logger,this.customItemService,this.itemHelper,tables);
+    addCustomAmmoCase_PL1(this.logger,this.customItemService,this.itemHelper,tables);
+    addCustomAmmoCase_PL2(this.logger,this.customItemService,this.itemHelper,tables);
+    addCustomAmmoCase_PL3(this.logger,this.customItemService,this.itemHelper,tables);
+    addCustomAmmoCase_PL4(this.logger,this.customItemService,this.itemHelper,tables);
+    addCustomAmmoCase_PL5(this.logger,this.customItemService,this.itemHelper,tables);
+    addCustomAmmoCase_PL6(this.logger,this.customItemService,this.itemHelper,tables);
+
+    // ammo background color
+    applyAmmoBackgroundColor(this.logger,this.itemHelper,tables);
 
     //
     this.logger.success('[SPTarkovAmmoCases]: done');
