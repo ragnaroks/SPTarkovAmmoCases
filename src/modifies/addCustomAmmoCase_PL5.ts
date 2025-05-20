@@ -18,10 +18,10 @@ export default function addCustomAmmoCase_PL5(logger: ILogger,customItemService:
     .filter(function(value) {
       const template = tables.templates.items[value] || null;
       if(!template) {return false;}
-      if(template._props.FlareTypes.length > 0) {return false;}
-      if(template._props.InitialSpeed < 100) {return false;}
-      if(template._props.PenetrationPower < 51) {return false;}
-      if(template._props.PenetrationPower > 60) {return false;}
+      if(Array.isArray(template._props.FlareTypes) && template._props.FlareTypes.length > 0) {return false;}
+      if(!template._props.InitialSpeed || template._props.InitialSpeed < 100) {return false;}
+      if(!template._props.PenetrationPower || template._props.PenetrationPower < 51) {return false;}
+      if(!template._props.PenetrationPower || template._props.PenetrationPower > 60) {return false;}
       return true;
     });
 
