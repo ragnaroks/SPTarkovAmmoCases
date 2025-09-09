@@ -33,7 +33,7 @@ import addCustomAmmoCase_20gb from './modifies/addCustomAmmoCase_20gb';
 import addCustomAmmoCase_20gs from './modifies/addCustomAmmoCase_20gs';
 import addCustomAmmoCase_4g from './modifies/addCustomAmmoCase_4g';
 import applyAmmoBackgroundColor from './modifies/applyAmmoBackgroundColor';
-import addCustomAmmoCase_PL0 from './modifies/addCustomAmmoCase_pl0';
+import addCustomAmmoCase_PL0 from './modifies/addCustomAmmoCase_PL0';
 import addCustomAmmoCase_PL1 from './modifies/addCustomAmmoCase_PL1';
 import addCustomAmmoCase_PL2 from './modifies/addCustomAmmoCase_PL2';
 import addCustomAmmoCase_PL3 from './modifies/addCustomAmmoCase_PL3';
@@ -41,7 +41,7 @@ import addCustomAmmoCase_PL4 from './modifies/addCustomAmmoCase_PL4';
 import addCustomAmmoCase_PL5 from './modifies/addCustomAmmoCase_PL5';
 import addCustomAmmoCase_PL6 from './modifies/addCustomAmmoCase_PL6';
 
-// example：https://dev.sp-tarkov.com/chomp/ModExamples/
+// example：https://github.com/sp-tarkov/mod-examples
 
 class Mod implements IPreSptLoadMod,IPostDBLoadMod,IPostSptLoadMod {
   private logger: ILogger;

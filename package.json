@@ -1,6 +1,6 @@
 {
     "name": "SPTarkovAmmoCases",
-    "version": "3.11.20250520",
+    "version": "3.11.20250909",
     "main": "src/mod.js",
     "license": "AGPL-3.0-only",
     "author": "ragnaroks",
