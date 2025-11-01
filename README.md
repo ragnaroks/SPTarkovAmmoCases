@@ -1,4 +1,4 @@
-# description
+﻿# description
 ammunition cases that classify by caliber or penetration for SPTarkov
 
 ### caliber cases
@@ -9,35 +9,32 @@ some empty grid can not put anything, it's intentional for future updates
 ### penetration level cases
 the case can be store any ammo with same penetration range
 
-### ammo background color
-only enable when your **mods** folder not include any one of these
-- rairaitheraichu-ammostats
-- odt-iteminfo
-- zzacidphantasm-itemvaluation
-- refringe-easyammunition
+### extended case
+just an extened case that have 196 cells, can store any ammo
 
+### ammo background color
 |penetration|color|
 |-|-|
-|61 ~ ∞+、40mm|red|
-|51 ~ 60|orange|
-|41 ~ 50|yellow|
-|31 ~ 40|violet|
-|21 ~ 30|blue|
-|11 ~ 20|green|
-|01 ~ 10|grey|
-|0、others|black|
+|40mm|red|
+|60+|red|
+|51 ~ 59|orange|
+|41 ~ 49|yellow|
+|31 ~ 39|violet|
+|20 ~ 29|blue|
+|10 ~ 19|green|
+|01 ~ 09|grey|
+|0-|black|
 
 # how to get
-- available at MECHANIC LL2, cost 500000 RUB
-- available at REF LL1, cost 66 GP (1 GP = 7500 RUB at now)
+- available at REF LL1 and Level 15, cost GP coins
 
 # install
-unarchive released zip file and put them in your SPTarkov game folder like `C:\EscapeFromTarkov`, it is should be have the file `SPT.Server.exe` there.
+unarchive released zip file and put them in your SPTarkov game folder like `C:\EscapeFromTarkov`, it is should be have the file `EscapeFromTarkov.exe` there.
 
 # preview
 ### list
-![list](./assets/1.png)
+![list](./Assets/1.png)
 ### caliber cases
-![container](./assets/2.png)
+![container](./Assets/2.png)
 ### penetration level cases
-![container](./assets/3.png)
+![container](./Assets/3.png)
