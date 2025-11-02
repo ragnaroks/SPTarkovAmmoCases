@@ -1,5 +1,6 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
+using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -10,26 +11,29 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Mod;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SPTarkovAmmoCases.Modifies;
 
 [Injectable(InjectionType.Scoped, null, OnLoadOrder.PostDBModLoader + 1)]
-public class AddAmmoCaseExtended : IOnLoad {
-    private ISptLogger<AddAmmoCaseExtended> Logger { get; }
+public class AddAmmoCasePortable : IOnLoad {
+    private ISptLogger<AddAmmoCasePortable> Logger { get; }
     private DatabaseService DatabaseService { get; }
     private CustomItemService CustomItemService { get; }
-    private Double HandbookPrice { get; } = 50_0000D;
-    private MongoId BaseId { get; } = new("68108beaedd53f6542dca500");
-    private MongoId NewId { get; } = new("68108beaedd53f6542dca501");
-    private MongoId RotateId { get; set; } = new("68108beaedd53f6542dca520");
+    private ItemHelper ItemHelper{ get; }
+    private Double HandbookPrice { get; } = 10_0000D;
+    private MongoId BaseId { get; } = new("68108beaedd53f6542dca700");
+    private MongoId NewId { get; } = new("68108beaedd53f6542dca701");
+    private MongoId RotateId { get; set; } = new("68108beaedd53f6542dca720");
 
 #pragma warning disable IDE0290 // 使用主构造函数
-    public AddAmmoCaseExtended (ISptLogger<AddAmmoCaseExtended> logger, DatabaseService databaseService, CustomItemService customItemService) {
+    public AddAmmoCasePortable (ISptLogger<AddAmmoCasePortable> logger, DatabaseService databaseService, CustomItemService customItemService,ItemHelper itemHelper) {
         this.Logger = logger;
         this.DatabaseService = databaseService;
         this.CustomItemService = customItemService;
+        this.ItemHelper = itemHelper;
     }
 #pragma warning restore IDE0290 // 使用主构造函数
 
@@ -43,8 +47,8 @@ public class AddAmmoCaseExtended : IOnLoad {
             HandbookPriceRoubles = this.HandbookPrice,
             HandbookParentId = Constants.HandbookIdForContainer,
             Locales = new(){
-                {"en",new(){Name = "extended ammo case",ShortName = "Extended",Description = "skydust™ extended ammo case"}},
-                {"ch",new(){Name = "扩容弹药箱",ShortName = "扩容",Description = "skydust™ 扩容弹药箱"}}
+                {"en",new(){Name = "portable ammo case",ShortName = "Portable",Description = "skydust™ portable ammo case"}},
+                {"ch",new(){Name = "便携弹药箱",ShortName = "便携",Description = "skydust™ 便携弹药箱"}}
             },
             OverrideProperties = new() {
                 BackgroundColor = "blue",
@@ -52,6 +56,8 @@ public class AddAmmoCaseExtended : IOnLoad {
                 Rarity = LootRarity.Not_exist,
                 RarityPvE = "not_exist",
                 Weight = 0,
+                Width = 1,
+                Height = 1,
                 ExamineExperience = (Int32)Math.Ceiling(this.HandbookPrice / 10000),
                 LootExperience = (Int32)Math.Ceiling(this.HandbookPrice / 10000),
                 Grids = [
@@ -61,8 +67,8 @@ public class AddAmmoCaseExtended : IOnLoad {
                         Parent = this.NewId,
                         Prototype = "55d329c24bdc2d892f8b4567",
                         Properties = new() {
-                            CellsH = 14,
-                            CellsV = 14,
+                            CellsH = 4,
+                            CellsV = 4,
                             Filters = [
                                 new(){
                                     Filter = [BaseClasses.AMMO],
@@ -82,7 +88,7 @@ public class AddAmmoCaseExtended : IOnLoad {
         if (createItemResult.Success is false) {
             this.Logger.Log(
                 LogLevel.Info,
-                String.Concat(Constants.LoggerPrefix, "AddAmmoCaseExtended.OnLoad() / failed / ", String.Join("；", createItemResult.Errors ?? Enumerable.Empty<String>())),
+                String.Concat(Constants.LoggerPrefix, "AddAmmoCasePortable.OnLoad() / failed / ", String.Join("；", createItemResult.Errors ?? Enumerable.Empty<String>())),
                 LogTextColor.Yellow
             );
             return Task.CompletedTask;
@@ -92,7 +98,7 @@ public class AddAmmoCaseExtended : IOnLoad {
         if (trader is null) {
             this.Logger.Log(
                 LogLevel.Info,
-                String.Concat(Constants.LoggerPrefix, "AddAmmoCaseExtended.OnLoad() / failed / trader not found"),
+                String.Concat(Constants.LoggerPrefix, "AddAmmoCasePortable.OnLoad() / failed / trader not found"),
                 LogTextColor.Yellow
             );
             return Task.CompletedTask;
@@ -124,9 +130,24 @@ public class AddAmmoCaseExtended : IOnLoad {
             }
         });
 
+        Dictionary<MongoId, TemplateItem> templates = this.DatabaseService.GetItems();
+        IEnumerable<MongoId> secureTpls = this.ItemHelper.GetItemTplsOfBaseType(BaseClasses.MOB_CONTAINER);
+        foreach (MongoId id in secureTpls) {
+            if(id==ItemTpl.SECURE_CONTAINER_BOSS){continue;}
+            if(templates.TryGetValue(id, out TemplateItem? template) is false || template is null){continue;}
+            if(template.Properties is null || template.Properties.Grids is null || template.Properties.Grids.Any() is false){continue;}
+            foreach (Grid grid in template.Properties.Grids) {
+                if(grid.Properties is null || grid.Properties.Filters is null || grid.Properties.Filters.Any() is false){continue;}
+                GridFilter gridFilter = grid.Properties.Filters.First();
+                if(gridFilter.Filter is null){continue;}
+                _ = gridFilter.Filter.Add(this.NewId);
+                break;
+            }
+        }
+
         this.Logger.Log(
             LogLevel.Info,
-            String.Concat(Constants.LoggerPrefix, "AddAmmoCaseExtended.OnLoad() / success / ", this.BaseId, " / ", this.RotateId),
+            String.Concat(Constants.LoggerPrefix, "AddAmmoCasePortable.OnLoad() / success / ", this.BaseId, " / ", this.RotateId),
             LogTextColor.Green
         );
         return Task.CompletedTask;
