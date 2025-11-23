@@ -146,6 +146,20 @@ public class AddAmmoCase23x75 : IOnLoad {
             }
         });
 
+        Dictionary<MongoId, TemplateItem> templates = this.DatabaseService.GetItems();
+        IEnumerable<MongoId> caseTpls = [ItemTpl.CONTAINER_THICC_ITEM_CASE,ItemTpl.CONTAINER_ITEM_CASE];
+        foreach (MongoId id in caseTpls) {
+            if(templates.TryGetValue(id, out TemplateItem? template) is false || template is null){continue;}
+            if(template.Properties is null || template.Properties.Grids is null || template.Properties.Grids.Any() is false){continue;}
+            foreach (Grid grid in template.Properties.Grids) {
+                if(grid.Properties is null || grid.Properties.Filters is null || grid.Properties.Filters.Any() is false){continue;}
+                GridFilter gridFilter = grid.Properties.Filters.First();
+                if(gridFilter.Filter is null){continue;}
+                _ = gridFilter.Filter.Add(this.NewId);
+                break;
+            }
+        }
+
         this.Logger.Log(
             LogLevel.Info,
             String.Concat(Constants.LoggerPrefix, "AddAmmoCase23x75.OnLoad() / success / ", this.BaseId, " / ", this.RotateId),

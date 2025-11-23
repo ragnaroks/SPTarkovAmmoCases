@@ -6,10 +6,12 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Logging;
 using SPTarkov.Server.Core.Models.Spt.Logging;
 using SPTarkov.Server.Core.Models.Spt.Mod;
+using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Mod;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -123,6 +125,20 @@ public class AddAmmoCaseExtended : IOnLoad {
                 BuyRestrictionCurrent = 0
             }
         });
+
+        Dictionary<MongoId, TemplateItem> templates = this.DatabaseService.GetItems();
+        IEnumerable<MongoId> caseTpls = [ItemTpl.CONTAINER_THICC_ITEM_CASE,ItemTpl.CONTAINER_ITEM_CASE];
+        foreach (MongoId id in caseTpls) {
+            if(templates.TryGetValue(id, out TemplateItem? template) is false || template is null){continue;}
+            if(template.Properties is null || template.Properties.Grids is null || template.Properties.Grids.Any() is false){continue;}
+            foreach (Grid grid in template.Properties.Grids) {
+                if(grid.Properties is null || grid.Properties.Filters is null || grid.Properties.Filters.Any() is false){continue;}
+                GridFilter gridFilter = grid.Properties.Filters.First();
+                if(gridFilter.Filter is null){continue;}
+                _ = gridFilter.Filter.Add(this.NewId);
+                break;
+            }
+        }
 
         this.Logger.Log(
             LogLevel.Info,

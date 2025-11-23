@@ -17,33 +17,33 @@ using System.Threading.Tasks;
 namespace SPTarkovAmmoCases.Modifies;
 
 [Injectable(InjectionType.Scoped, null, OnLoadOrder.PostDBModLoader + 1)]
-public class AddAmmoCase9x18PM : IOnLoad {
-    private ISptLogger<AddAmmoCase9x18PM> Logger { get; }
+public class AddAmmoCase127x99 : IOnLoad {
+    private ISptLogger<AddAmmoCase127x99> Logger { get; }
     private DatabaseService DatabaseService { get; }
     private CustomItemService CustomItemService { get; }
     private Double HandbookPrice { get; } = 50_0000D;
-    private MongoId BaseId { get; } = new("6808f75205109f6aadebd500");
-    private MongoId NewId { get; } = new("6808f75205109f6aadebd501");
-    private MongoId RotateId { get; set; } = new("6808f75205109f6aadebd520");
+    private MongoId BaseId { get; } = new("68091fff09a0386549a4f500");
+    private MongoId NewId { get; } = new("68091fff09a0386549a4f501");
+    private MongoId RotateId { get; set; } = new("68091fff09a0386549a4f520");
     private IEnumerable<MongoId> ItemTpls { get; } = [
-        ItemTpl.AMMO_9X18PM_PBM,
-        ItemTpl.AMMO_9X18PM_PSTM,
-        ItemTpl.AMMO_9X18PM_BZHT,
-        ItemTpl.AMMO_9X18PM_RG028,
-        ItemTpl.AMMO_9X18PM_PST,
-        ItemTpl.AMMO_9X18PM_PPT,
-        ItemTpl.AMMO_9X18PM_PPE,
-        ItemTpl.AMMO_9X18PM_PRS,
-        ItemTpl.AMMO_9X18PM_PS_PPO,
-        ItemTpl.AMMO_9X18PM_P,
-        ItemTpl.AMMO_9X18PM_PSO,
-        ItemTpl.AMMO_9X18PM_PSV,
-        ItemTpl.AMMO_9X18PM_SP7,
-        ItemTpl.AMMO_9X18PM_SP8
+        ItemTpl.AMMO_127X99_M903,
+        ItemTpl.AMMO_127X99_M33,
+        ItemTpl.AMMO_127X99_M21,
+        ItemTpl.AMMO_127X99_HP,
+        ItemTpl.MONEY_ROUBLES,
+        ItemTpl.MONEY_ROUBLES,
+        ItemTpl.MONEY_ROUBLES,
+        ItemTpl.MONEY_ROUBLES,
+        ItemTpl.MONEY_ROUBLES,
+        ItemTpl.MONEY_ROUBLES,
+        ItemTpl.MONEY_ROUBLES,
+        ItemTpl.MONEY_ROUBLES,
+        ItemTpl.MONEY_ROUBLES,
+        ItemTpl.MONEY_ROUBLES
     ];
 
 #pragma warning disable IDE0290 // 使用主构造函数
-    public AddAmmoCase9x18PM (ISptLogger<AddAmmoCase9x18PM> logger, DatabaseService databaseService, CustomItemService customItemService) {
+    public AddAmmoCase127x99 (ISptLogger<AddAmmoCase127x99> logger, DatabaseService databaseService, CustomItemService customItemService) {
         this.Logger = logger;
         this.DatabaseService = databaseService;
         this.CustomItemService = customItemService;
@@ -86,8 +86,8 @@ public class AddAmmoCase9x18PM : IOnLoad {
             HandbookPriceRoubles = this.HandbookPrice,
             HandbookParentId = Constants.HandbookIdForContainer,
             Locales = new(){
-                {"en",new(){Name = "9x18PM ammo case",ShortName = "9x18PM",Description = "skydust™ 9x18PM ammo case"}},
-                {"ch",new(){Name = "9x18PM 弹药箱",ShortName = "9x18PM",Description = "skydust™ 9x18PM 弹药箱"}}
+                {"en",new(){Name = ".50BMG ammo case",ShortName = ".50BMG",Description = "skydust™ .50BMG ammo case"}},
+                {"ch",new(){Name = ".50BMG 弹药箱",ShortName = ".50BMG",Description = "skydust™ .50BMG 弹药箱"}}
             },
             OverrideProperties = new() {
                 BackgroundColor = "blue",
@@ -104,7 +104,7 @@ public class AddAmmoCase9x18PM : IOnLoad {
         if (createItemResult.Success is false) {
             this.Logger.Log(
                 LogLevel.Info,
-                String.Concat(Constants.LoggerPrefix, "AddAmmoCase9x18PM.OnLoad() / failed / ", String.Join("；", createItemResult.Errors ?? Enumerable.Empty<String>())),
+                String.Concat(Constants.LoggerPrefix, "AddAmmoCase127x99.OnLoad() / failed / ", String.Join("；", createItemResult.Errors ?? Enumerable.Empty<String>())),
                 LogTextColor.Yellow
             );
             return Task.CompletedTask;
@@ -114,7 +114,7 @@ public class AddAmmoCase9x18PM : IOnLoad {
         if (trader is null) {
             this.Logger.Log(
                 LogLevel.Info,
-                String.Concat(Constants.LoggerPrefix, "AddAmmoCase9x18PM.OnLoad() / failed / trader not found"),
+                String.Concat(Constants.LoggerPrefix, "AddAmmoCase127x99.OnLoad() / failed / trader not found"),
                 LogTextColor.Yellow
             );
             return Task.CompletedTask;
@@ -162,7 +162,7 @@ public class AddAmmoCase9x18PM : IOnLoad {
 
         this.Logger.Log(
             LogLevel.Info,
-            String.Concat(Constants.LoggerPrefix, "AddAmmoCase9x18PM.OnLoad() / success / ", this.BaseId, " / ", this.RotateId),
+            String.Concat(Constants.LoggerPrefix, "AddAmmoCase127x99.OnLoad() / success / ", this.BaseId, " / ", this.RotateId),
             LogTextColor.Green
         );
         return Task.CompletedTask;

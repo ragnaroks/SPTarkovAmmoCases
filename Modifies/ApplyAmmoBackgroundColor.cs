@@ -65,7 +65,7 @@ public class ApplyAmmoBackgroundColor : IOnLoad {
 #pragma warning restore IDE0290 // 使用主构造函数
 
     public Task OnLoad () {
-        Dictionary<MongoId, TemplateItem> templates = this.DatabaseService.GetTables().Templates.Items;
+        Dictionary<MongoId, TemplateItem> templates = this.DatabaseService.GetItems();
         IEnumerable<MongoId> templates2 = this.ItemHelper.GetItemTplsOfBaseType(BaseClasses.AMMO).Where(x => !this.ExcludeList.Contains(x));
 
         foreach (MongoId id in templates2) {
