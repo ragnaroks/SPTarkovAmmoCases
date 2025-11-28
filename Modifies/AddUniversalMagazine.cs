@@ -25,9 +25,9 @@ public class AddUniversalMagazine : IOnLoad {
     private CustomItemService CustomItemService { get; }
     private ItemHelper ItemHelper { get; }
     private Double HandbookPrice { get; } = 10_0000D;
-    private MongoId BaseId { get; } = new("692991ba6e9e97027c9b7300");
-    private MongoId NewId { get; } = new("692991ba6e9e97027c9b7301");
-    private MongoId RotateId { get; set; } = new("692991ba6e9e97027c9b7320");
+    private MongoId BaseId { get; } = new("692991ba6e9e97027c9b7400");
+    private MongoId NewId { get; } = new("692991ba6e9e97027c9b7401");
+    private MongoId RotateId { get; set; } = new("692991ba6e9e97027c9b7420");
 
 #pragma warning disable IDE0290 // 使用主构造函数
     public AddUniversalMagazine (ISptLogger<AddUniversalMagazine> logger, DatabaseService databaseService, CustomItemService customItemService, ItemHelper itemHelper) {
@@ -41,12 +41,13 @@ public class AddUniversalMagazine : IOnLoad {
     public Task OnLoad () {
         this.RotateId = Helper.Miscellaneous.MongoIdCalc(this.RotateId, 1);
         NewItemFromCloneDetails newItem = new() {
-            ItemTplToClone = ItemTpl.MAGAZINE_20X1MM_DRUM_20RND,
+            // IDK why the magazine of toygun will cause a strange bug in detail window 
+            ItemTplToClone = ItemTpl.MAGAZINE_9X18PM_PM_8RND,
             NewId = this.NewId,
             ParentId = BaseClasses.MAGAZINE,
             FleaPriceRoubles = Math.Ceiling(this.HandbookPrice * 1.25),
             HandbookPriceRoubles = this.HandbookPrice,
-            HandbookParentId = Constants.HandbookIdForContainer,
+            HandbookParentId = Constants.HandbookIdForMagazine,
             Locales = new(){
                 {"en",new(){Name = "universal magazine",ShortName = "universal",Description = "skydust™ universal magazine"}},
                 {"ch",new(){Name = "万能弹匣",ShortName = "万能",Description = "skydust™ 万能弹匣"}}
@@ -57,7 +58,7 @@ public class AddUniversalMagazine : IOnLoad {
                 Rarity = LootRarity.Not_exist,
                 RarityPvE = "not_exist",
                 Weight = 0.25,
-                Width = 2,
+                Width = 1,
                 Height = 2,
                 ExamineExperience = (Int32)Math.Ceiling(this.HandbookPrice / 10000),
                 LootExperience = (Int32)Math.Ceiling(this.HandbookPrice / 10000),
@@ -176,17 +177,13 @@ public class AddUniversalMagazine : IOnLoad {
         ];
         IEnumerable<MongoId> filteredTpls = weaponTpls.Except(excludeTpls);
         foreach (MongoId id in filteredTpls) {
-            Console.WriteLine("check for {0}",id);
             if (templates.TryGetValue(id, out TemplateItem? template) is false || template is null) { continue; }
             if (template.Properties is null || template.Properties.Slots is null || template.Properties.Slots.Any() is false) { continue; }
-            Console.WriteLine("adding for {0}",id);
             foreach (Slot slot in template.Properties.Slots) {
-                if (slot.Name is not "mod_magazine") { continue; }
                 if (slot.Properties is null || slot.Properties.Filters is null || slot.Properties.Filters.Any() is false) { continue; }
                 SlotFilter slotFilter = slot.Properties.Filters.First();
                 if (slotFilter.Filter is null) { continue; }
                 _ = slotFilter.Filter.Add(this.NewId);
-                Console.WriteLine("added for {0}",id);
                 break;
             }
         }
