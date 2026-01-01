@@ -1,19 +1,19 @@
 ﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
-using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Logging;
+using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Logging;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Mod;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace SPTarkovAmmoCases.Modifies;
@@ -23,18 +23,18 @@ public class AddUniversalMagazine : IOnLoad {
     private ISptLogger<AddUniversalMagazine> Logger { get; }
     private DatabaseService DatabaseService { get; }
     private CustomItemService CustomItemService { get; }
-    private ItemHelper ItemHelper { get; }
+    private ConfigServer ConfigServer { get; }
     private Double HandbookPrice { get; } = 10_0000D;
     private MongoId BaseId { get; } = new("692991ba6e9e97027c9b7400");
     private MongoId NewId { get; } = new("692991ba6e9e97027c9b7401");
     private MongoId RotateId { get; set; } = new("692991ba6e9e97027c9b7420");
 
 #pragma warning disable IDE0290 // 使用主构造函数
-    public AddUniversalMagazine (ISptLogger<AddUniversalMagazine> logger, DatabaseService databaseService, CustomItemService customItemService, ItemHelper itemHelper) {
+    public AddUniversalMagazine (ISptLogger<AddUniversalMagazine> logger, DatabaseService databaseService, CustomItemService customItemService, ConfigServer configServer) {
         this.Logger = logger;
         this.DatabaseService = databaseService;
         this.CustomItemService = customItemService;
-        this.ItemHelper = itemHelper;
+        this.ConfigServer = configServer;
     }
 #pragma warning restore IDE0290 // 使用主构造函数
 
@@ -130,61 +130,33 @@ public class AddUniversalMagazine : IOnLoad {
         });
 
         Dictionary<MongoId, TemplateItem> templates = this.DatabaseService.GetItems();
-        FieldInfo[] weaponFields = typeof(Weapons).GetFields(BindingFlags.Public|BindingFlags.Static);
-        //IEnumerable<MongoId> weaponTpls = this.ItemHelper.GetItemTplsOfBaseType(BaseClass.WEAPON);
-        IEnumerable<MongoId> weaponTpls = weaponFields.Select(x=>x.GetValue(null)).Where(x=>x is not null).Cast<MongoId>();
-        IEnumerable<MongoId> excludeTpls = [
-            ItemTpl.REVOLVER_CHIAPPA_RHINO_200DS_9X19,
-            ItemTpl.REVOLVER_CHIAPPA_RHINO_50DS_357,
-            ItemTpl.REVOLVER_RSH12_127X55,
-            ItemTpl.REVOLVER_MTS25512_12GA_SHOTGUN,
-            ItemTpl.REVOLVER_MILKOR_M32A1_MSGL_40MM_GRENADE_LAUNCHER,
-            ItemTpl.FLARE_ROP30_REACTIVE_FLARE_CARTRIDGE_WHITE,
-            ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_BLUE,
-            ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_FIREWORK,
-            ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_GREEN,
-            ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_RED,
-            ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_SPECIAL_YELLOW,
-            ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_YELLOW,
-            ItemTpl.SIGNALPISTOL_ZID_SP81_26X75_SIGNAL_PISTOL,
-            ItemTpl.ROCKETLAUNCHER_RSHG2_725MM_ROCKET_LAUNCHER,
-            ItemTpl.GRENADE_F1_HAND,
-            ItemTpl.GRENADE_F1_HAND_GRENADE_REDUCED_DELAY,
-            ItemTpl.GRENADE_M18_SMOKE_GRENADE_GREEN,
-            ItemTpl.GRENADE_M67_HAND,
-            ItemTpl.GRENADE_MODEL_7290_FLASH_BANG,
-            ItemTpl.GRENADE_RDG2B_SMOKE,
-            ItemTpl.GRENADE_RGD5_HAND,
-            ItemTpl.GRENADE_RGN_HAND,
-            ItemTpl.GRENADE_RGO_HAND,
-            ItemTpl.GRENADE_V40_MINI,
-            ItemTpl.GRENADE_VOG17_KHATTABKA_IMPROVISED_HAND,
-            ItemTpl.GRENADE_VOG25_KHATTABKA_IMPROVISED_HAND,
-            ItemTpl.GRENADE_ZARYA_STUN,
-            ItemTpl.SHOTGUN_BENELLI_M3_SUPER_90_12GA_DUALMODE,
-            ItemTpl.SHOTGUN_MOSSBERG_590A1_12GA_PUMPACTION,
-            ItemTpl.SHOTGUN_MP133_12GA_PUMPACTION,
-            ItemTpl.SHOTGUN_MP153_12GA_SEMIAUTOMATIC,
-            ItemTpl.SHOTGUN_MP155_12GA_SEMIAUTOMATIC,
-            ItemTpl.SHOTGUN_MP18_762X54R_SINGLESHOT_RIFLE,
-            ItemTpl.SHOTGUN_MP431C_12GA_DOUBLEBARREL,
-            ItemTpl.SHOTGUN_MP43_12GA_SAWEDOFF_DOUBLEBARREL,
-            ItemTpl.SHOTGUN_REMINGTON_MODEL_870_12GA_PUMPACTION,
-            ItemTpl.SHOTGUN_TOZ_KS23M_23X75MM_PUMPACTION,
-            ItemTpl.GRENADELAUNCHER_FN40GL_01,
-            ItemTpl.GRENADELAUNCHER_FN40GL_02,
-            ItemTpl.GRENADELAUNCHER_FN40GL_03
-        ];
-        IEnumerable<MongoId> filteredTpls = weaponTpls.Except(excludeTpls);
-        foreach (MongoId id in filteredTpls) {
-            if (templates.TryGetValue(id, out TemplateItem? template) is false || template is null) { continue; }
-            if (template.Properties is null || template.Properties.Slots is null || template.Properties.Slots.Any() is false) { continue; }
+        foreach (TemplateItem template in templates.Values) {
+            if (template.Properties is null) { continue; }
+            if (template.Properties.IsFlareGun is true || template.Properties.IsGrenadeLauncher is true) { continue; }
+            if (template.Properties.BFirerate is null or < 29D) { continue; }
+            if (template.Properties.Slots is null || template.Properties.Slots.Any() is false) { continue; }
+            //if (template.Properties.Chambers is null || template.Properties.Slots.Any() is false) { continue; }
+            if (template.Properties.WeapFireType is null || template.Properties.WeapFireType.Count < 1) { continue; }
             foreach (Slot slot in template.Properties.Slots) {
+                if (slot.Name is not "mod_magazine") { continue; }
                 if (slot.Properties is null || slot.Properties.Filters is null || slot.Properties.Filters.Any() is false) { continue; }
                 SlotFilter slotFilter = slot.Properties.Filters.First();
                 if (slotFilter.Filter is null) { continue; }
                 _ = slotFilter.Filter.Add(this.NewId);
                 break;
+            }
+        }
+
+        BotConfig botConfig = this.ConfigServer.GetConfig<BotConfig>();
+        foreach (KeyValuePair<String, EquipmentFilters?> equipments in botConfig.Equipment) {
+            if (equipments.Value is null || equipments.Value.Blacklist is null) { continue; }
+            foreach (EquipmentFilterDetails details in equipments.Value.Blacklist) {
+                if (details.Equipment is null) { continue; }
+                foreach (KeyValuePair<String, HashSet<MongoId>> equipment in details.Equipment) {
+                    if (equipment.Key is not "mod_magazine") { continue; }
+                    _ = equipment.Value.Add(this.NewId);
+                    break;
+                }
             }
         }
 
